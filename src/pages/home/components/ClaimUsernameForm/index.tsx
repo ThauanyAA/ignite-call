@@ -34,11 +34,13 @@ export function ClaimUsernameForm() {
     <>
       <Form as="form" onSubmit={handleSubmit(handleClaimUsername)}>
         <TextInput
+          onPointerEnterCapture={undefined}
+          onPointerLeaveCapture={undefined}
+          crossOrigin={undefined}
           size="sm"
           prefix="ignite.com/"
           placeholder="seu-usuário"
-          {...register('username')}
-        />
+          {...register('username')}        />
         <Button size="sm" type="submit">
           Reservar
           <ArrowRight />
