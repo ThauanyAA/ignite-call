@@ -6,6 +6,8 @@ import { z } from 'zod'
 import { Container, Form, FormError, Header } from './styles'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { api } from '../../lib/axios'
+import { AxiosError } from 'axios'
 
 const registerFormSchema = z.object({
   username: z
@@ -39,8 +41,20 @@ export default function Register() {
     }
   }, [router.query?.username, setValue])
 
-  function handleRegister(data: RegisterFormData) {
-    console.log(data)
+  async function handleRegister(data: RegisterFormData) {
+    try {
+      await api.post('/users', {
+        name: data.name,
+        username: data.username,
+      })
+    } catch (err) {
+      if (err instanceof AxiosError && err?.response?.data?.message) {
+        alert(err.response.data.message)
+        return
+      }
+
+      console.error(err)
+    }
   }
 
   return (
@@ -59,10 +73,9 @@ export default function Register() {
         <label>
           <Text size="sm">Nome de usuário</Text>
           <TextInput
-            prefix="ignite.com/"
+            onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} crossOrigin={undefined} prefix="ignite.com/"
             placeholder="seu-usuário"
-            {...register('username')}
-          />
+            {...register('username')}          />
 
           {errors.username && (
             <FormError size="sm">{errors.username.message}</FormError>
@@ -71,7 +84,7 @@ export default function Register() {
 
         <label>
           <Text size="sm">Nome completo</Text>
-          <TextInput placeholder="Seu nome" {...register('name')} />
+          <TextInput onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} crossOrigin={undefined} placeholder="Seu nome" {...register('name')} />
 
           {errors.name && (
             <FormError size="sm">{errors.name.message}</FormError>
